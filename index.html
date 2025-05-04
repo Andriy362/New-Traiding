@@ -3,33 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список угод</title>
+    <title class="yoga">Список угод</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .profit {
-            color: green;
-        }
-        .loss {
-            color: red;
-        }
-        .neutral {
-            color: gray;
-        }
+        .profit { color: green; }
+        .loss { color: red; }
+        .neutral { color: gray; }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1>Список угод</h1>
-        <div class="mb-3">
-            <h3>Баланс: <span id="balance">1078</span></h3>
+    <div class=" mt-4">
+        <h1 class="yoga">Список угод</h1>
+        <h3>Початковий баланс: <span id="initial-balance">1078</span></h3>
+
+        <div class="d-flex justify-content-end my-3">
+            <button class="btn btn-primary" onclick="showAddDealModal()">Додати угоду</button>
         </div>
-        <div class="d-flex justify-content-end mb-3">
-            <button class="btn btn-primary" onclick="showAddDealForm()">Додати угоду</button>
-        </div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -47,169 +41,77 @@
                     <th>Дії</th>
                 </tr>
             </thead>
-            <tbody id="dealsTable"></tbody>
+            <tbody id="deals-table-body">
+                <!-- Динамічний контент додається тут -->
+            </tbody>
         </table>
     </div>
 
-    <!-- Модальне вікно для додавання/редагування угод -->
-    <div id="dealModal" style="display:none;">
-        <div class="container mt-4">
-            <h2 id="modalTitle">Додати угоду</h2>
-            <form id="dealForm">
-                <input type="hidden" id="dealId">
-                <div class="mb-3">
-                    <label for="open_date" class="form-label">Дата відкриття</label>
-                    <input type="date" id="open_date" class="form-control" required>
+    <!-- Модальне вікно для додавання/редагування угоди -->
+    <div id="deal-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Додати угоду</h5>
+                    <button type="button" class="btn-close" onclick="closeModal()"></button>
                 </div>
-                <div class="mb-3">
-                    <label for="open_time" class="form-label">Час відкриття</label>
-                    <input type="time" id="open_time" class="form-control" required>
+                <div class="modal-body">
+                    <form id="deal-form">
+                        <div class="mb-3">
+                            <label for="open-date" class="form-label">Дата відкриття</label>
+                            <input type="date" id="open-date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="open-time" class="form-label">Час відкриття</label>
+                            <input type="time" id="open-time" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="close-date" class="form-label">Дата закриття</label>
+                            <input type="date" id="close-date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="close-time" class="form-label">Час закриття</label>
+                            <input type="time" id="close-time" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="symbol" class="form-label">Інструмент</label>
+                            <input type="text" id="symbol" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="direction" class="form-label">Напрямок</label>
+                            <select id="direction" class="form-control" required>
+                                <option value="Buy">Buy</option>
+                                <option value="Sell">Sell</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="open-price" class="form-label">Ціна відкриття</label>
+                            <input type="number" step="0.0001" id="open-price" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="close-price" class="form-label">Ціна закриття</label>
+                            <input type="number" step="0.0001" id="close-price" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="commission" class="form-label">Комісія</label>
+                            <input type="number" step="0.01" id="commission" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="result" class="form-label">Результат</label>
+                            <input type="number" step="0.01" id="result" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Коментар</label>
+                            <textarea id="comment" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Зберегти</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Скасувати</button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="close_date" class="form-label">Дата закриття</label>
-                    <input type="date" id="close_date" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="close_time" class="form-label">Час закриття</label>
-                    <input type="time" id="close_time" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="symbol" class="form-label">Інструмент</label>
-                    <input type="text" id="symbol" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="direction" class="form-label">Напрямок</label>
-                    <select id="direction" class="form-control" required>
-                        <option value="Buy">Buy</option>
-                        <option value="Sell">Sell</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="open_price" class="form-label">Ціна відкриття</label>
-                    <input type="number" id="open_price" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="close_price" class="form-label">Ціна закриття</label>
-                    <input type="number" id="close_price" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="commission" class="form-label">Комісія</label>
-                    <input type="number" id="commission" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="result" class="form-label">Результат</label>
-                    <input type="number" id="result" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="comment" class="form-label">Коментар</label>
-                    <textarea id="comment" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Зберегти</button>
-                <button type="button" class="btn btn-secondary" onclick="hideModal()">Скасувати</button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <script>
-        let deals = JSON.parse(localStorage.getItem("deals")) || [];
-        let balance = localStorage.getItem("balance") || 1078;
-
-        document.getElementById("balance").innerText = balance;
-
-        function saveDeals() {
-            localStorage.setItem("deals", JSON.stringify(deals));
-            localStorage.setItem("balance", balance);
-        }
-
-        function updateTable() {
-            const table = document.getElementById("dealsTable");
-            table.innerHTML = "";
-            deals.forEach((deal, index) => {
-                const row = `
-                    <tr>
-                        <td>${deal.open_date}</td>
-                        <td>${deal.open_time}</td>
-                        <td>${deal.close_date}</td>
-                        <td>${deal.close_time}</td>
-                        <td>${deal.symbol}</td>
-                        <td>${deal.direction}</td>
-                        <td>${deal.open_price}</td>
-                        <td>${deal.close_price}</td>
-                        <td>${deal.commission}</td>
-                        <td class="${deal.result > 0 ? "profit" : deal.result < 0 ? "loss" : "neutral"}">${deal.result}</td>
-                        <td>${deal.comment}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="editDeal(${index})">Редагувати</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteDeal(${index})">Видалити</button>
-                        </td>
-                    </tr>
-                `;
-                table.innerHTML += row;
-            });
-        }
-
-        function showAddDealForm() {
-            document.getElementById("dealForm").reset();
-            document.getElementById("dealId").value = "";
-            document.getElementById("modalTitle").innerText = "Додати угоду";
-            document.getElementById("dealModal").style.display = "block";
-        }
-
-        function editDeal(index) {
-            const deal = deals[index];
-            document.getElementById("dealId").value = index;
-            for (let key in deal) {
-                const input = document.getElementById(key);
-                if (input) input.value = deal[key];
-            }
-            document.getElementById("modalTitle").innerText = "Редагувати угоду";
-            document.getElementById("dealModal").style.display = "block";
-        }
-
-        function deleteDeal(index) {
-            balance -= parseFloat(deals[index].result);
-            deals.splice(index, 1);
-            saveDeals();
-            updateTable();
-            document.getElementById("balance").innerText = balance;
-        }
-
-        document.getElementById("dealForm").onsubmit = function (event) {
-            event.preventDefault();
-            const id = document.getElementById("dealId").value;
-            const newDeal = {
-                open_date: document.getElementById("open_date").value,
-                open_time: document.getElementById("open_time").value,
-                close_date: document.getElementById("close_date").value,
-                close_time: document.getElementById("close_time").value,
-                symbol: document.getElementById("symbol").value,
-                direction: document.getElementById("direction").value,
-                open_price: parseFloat(document.getElementById("open_price").value),
-                close_price: parseFloat(document.getElementById("close_price").value),
-                commission: parseFloat(document.getElementById("commission").value),
-                result: parseFloat(document.getElementById("result").value),
-                comment: document.getElementById("comment").value
-            };
-
-            if (id) {
-                balance -= parseFloat(deals[id].result);
-                deals[id] = newDeal;
-            } else {
-                deals.push(newDeal);
-            }
-            balance += newDeal.result;
-
-            saveDeals();
-            updateTable();
-            document.getElementById("balance").innerText = balance;
-            hideModal();
-        };
-
-        function hideModal() {
-            document.getElementById("dealModal").style.display = "none";
-        }
-
-        updateTable();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

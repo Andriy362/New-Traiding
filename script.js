@@ -1,5 +1,9 @@
-let initialBalance = 1078;
-let deals = [];
+let initialBalance = parseFloat(localStorage.getItem('initialBalance'));
+if (isNaN(initialBalance)) {
+    initialBalance = 1078; // Якщо значення відсутнє або некоректне, встановлюємо 1078
+}
+let deals = JSON.parse(localStorage.getItem('deals')) || [];  // Завантажити угоди з localStorage або порожній масив
+let currentBalance = initialBalance + deals.reduce((acc, deal) => acc + deal.result, 0);
 
 function updateTable() {
     const tableBody = document.getElementById("deals-table-body");
@@ -29,6 +33,10 @@ function updateTable() {
     });
 
     document.getElementById("initial-balance").innerText = initialBalance.toFixed(2);
+    // Зберігаємо угоди в localStorage
+    localStorage.setItem('deals', JSON.stringify(deals));
+    // Оновлюємо початковий баланс
+    localStorage.setItem('initialBalance', initialBalance.toFixed(2));
 }
 
 function showAddDealModal() {
